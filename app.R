@@ -30,22 +30,24 @@ ui <- fluidPage(
                                  conditionalPanel("input.file2 == 'Example2'",
                                                   downloadButton('downloadEx2', 'Download Example data')
                                  )),
+                               conditionalPanel("input.cPanels1 == 2",
                                wellPanel(
                                  h4(strong("KM Analysis")),
                                  selectInput("select21", "Select a Variable of Interest as Cohort Group", 
                                              choices=c("AGE", "RACE")),
                                  selectInput("binary",label= "The variable of interest is categorical or continuous", 
-                                             choices = c("Categorical Variable" = "categorical", "Continuous Variable"="continuous")),
+                                             choices = c("Categorical Variable" = "categorical", "Continuous Variable"="continuous"), selected= "continuous"),
                                  conditionalPanel("input.binary == 'continuous'",
                                                   radioButtons("cutoff2", "Choose Cutoff Point for Continuous Variable:", list("Optimal Cutoff" = 1,"25th Percentile" = 25,"50th Percentile" = 50, "75th Percentile" = 75), selected = 25)),
                                  selectInput("select22", "Select a Time Variable to Visualize KM Plot", 
                                              choices=c("os")),
                                  selectInput("select23", "Select a Censoring Variable to Visualize KM Plot", 
                                              choices=c("os_censor")),
-                                 radioButtons("time", "Time Unit:", list("Years" = 1, "Months" = 2, "Days" = 3), selected = 3),
+                                 radioButtons("time", "Time Unit:", list("Years" = 1, "Months" = 2, "Days" = 3), selected = 1),
                                  radioButtons("riskt", "Risk Table:", list("Yes" = TRUE, "No" = FALSE), selected = TRUE),
                                  hr()                                
-                               ),
+                               )),
+                               conditionalPanel("input.cPanels1 == 3",
                                wellPanel(
                                  h4(strong("Univariate Association Analysis")),
                                  selectInput("select24", "Select a Time Variable for Survival Analysis", 
@@ -56,23 +58,28 @@ ui <- fluidPage(
                                              c("AGE", "RACE"), choices=c("AGE", "RACE"), multiple = TRUE),
                                  radioButtons("assum", "Test for Proportional Hazards Assumption:", list("Yes" = 1,"No" = 0), selected = 0),
                                  hr()                                
-                               ),
+                               )),
+                               
+                               conditionalPanel("input.cPanels1 == 3",
                                h4(strong("Downloads")),
                                wellPanel(
                                  textInput("fname22", "Type the file name you would like to save as", value = "survivaltable"),
                                  downloadButton('x1', 'Download Survival Report')
-                               ),
+                               )),
+                               conditionalPanel("input.cPanels1 == 2",
+                               h4(strong("Downloads")),
                                wellPanel(
                                  textInput("fname21", "Type the file name you would like to save as", value = "kmplot"),
                                  downloadButton('downloadKM', 'Download KM Plot')
                                )
-                        ),
+                        )),
                         column(10,
                                tabsetPanel(
-                               tabPanel("Read Me", htmlOutput("ReadMe2")),
-                               tabPanel("KM Analysis and Plot", htmlOutput("pv21"), plotOutput("kmplot", height= 600, width = 800)),
+                               tabPanel("Read Me", htmlOutput("ReadMe2"), value =1),
+                               tabPanel("KM Analysis and Plot", htmlOutput("pv21"), plotOutput("kmplot", height= 600, width = 800), value =2),
                                tabPanel("Univariate Survival Association (Cox Model)", htmlOutput("pv22"),
-                                         DT::dataTableOutput("out2"))
+                                         DT::dataTableOutput("out2"), value = 3),
+                               id = "cPanels1"
                                )                               #uiOutput("out2")
                                
                         ),
@@ -109,6 +116,7 @@ ui <- fluidPage(
                                  conditionalPanel("input.file3 == 'Example3'",
                                                   downloadButton('downloadEx3', 'Download Example data')
                                  )),
+                               conditionalPanel("input.cPanels2 == 2",
                                wellPanel(
                                  h4(strong("CIF Analysis")),
                                  selectInput("select31", "Select a Variable of Interest as Cohort Group", 
@@ -127,7 +135,8 @@ ui <- fluidPage(
                                  radioButtons("event", "Event Code:", list("1" = 1, "2" = 2, "0" = 0), selected = 2),
                                  radioButtons("censor", "Censor Code:", list("1" = 1, "2" = 2, "0" = 0), selected = 0),
                                  hr()                                
-                               ),
+                               )),
+                               conditionalPanel("input.cPanels2 == 3",
                                wellPanel(
                                  h4(strong("Univariate Association Analysis")),
                                  selectInput("select34", "Select a Time Variable for Competing Risk Survival Analysis", 
@@ -139,12 +148,15 @@ ui <- fluidPage(
                                  radioButtons("event2", "Event Code:", list("1" = 1, "2" = 2, "0" = 0), selected = 2),
                                  radioButtons("censor2", "Censor Code:", list("1" = 1, "2" = 2, "0" = 0), selected = 0),
                                  hr()                                
-                               ),
+                               )),
+                               conditionalPanel("input.cPanels2 == 3",
                                h4(strong("Downloads")),
                                wellPanel(
                                  textInput("fname32", "Type the file name you would like to save as", value = "crrtable"),
                                  downloadButton('x2', 'Download Competing Risk Report')
-                               ),
+                               )),
+                               conditionalPanel("input.cPanels2 == 2",
+                               h4(strong("Downloads")),
                                wellPanel(
                                  textInput("fname31", "Type the file name you would like to save as", value = "cifplot"),
                                  downloadButton('downloadcif', 'Download CIF Plot')
@@ -153,16 +165,17 @@ ui <- fluidPage(
                                  textInput("fname33", "Type the file name you would like to save as", value = "ciftable"),
                                  downloadButton('downloadciftable', 'Download CIF Report')
                                )
+                               )
                         ),
                         column(10,
                                tabsetPanel(
-                                 tabPanel("Read Me", htmlOutput("ReadMe3")),
+                                 tabPanel("Read Me", htmlOutput("ReadMe3"), value = 1),
                                  tabPanel("CIF Analysis and Plot", htmlOutput("pv31"),
                                           plotOutput("cifplot", height= 600, width = 800),
-                                          DT::dataTableOutput("ciftable")),
+                                          DT::dataTableOutput("ciftable"), value = 2),
                                  tabPanel("Univariate Survival Association (Fine and Gray Model)", htmlOutput("pv32"),
-                                          DT::dataTableOutput("out3"))
-                               )                               #uiOutput("out2")
+                                          DT::dataTableOutput("out3"), value = 3),
+                                 id = "cPanels2")                               #uiOutput("out2")
                                
                                #uiOutput("out2")
                                
@@ -212,7 +225,9 @@ ui <- fluidPage(
                                              choices=c("os")),
                                  selectInput("select43", "Select a Censoring Variable to Visualize KM/CIF Plot", 
                                              choices=c("os_censor")),
-                                 textInput("text2", label = "Input Time Point for Landmark Analysis", value = "200"),
+                                 selectInput("select44", "Select a Time Dependent Variable to Visualize KM/CIF Plot", 
+                                             choices=c("wtime")),
+                                       textInput("text2", label = "Input Time Point for Landmark Analysis", value = "200"),
                                  radioButtons("time3", "Time Unit:", list("Years" = 1, "Months" = 2, "Days" = 3), selected = 3),
                                  radioButtons("option", "KM or CIF:", list("KM" = TRUE, "CIF" = FALSE), selected = TRUE),
                                  radioButtons("riskt2", "Risk Table:", list("Yes" = TRUE, "No" = FALSE), selected = TRUE),
@@ -226,7 +241,7 @@ ui <- fluidPage(
                         ),
                         column(10,
                                tabsetPanel(
-                                 tabPanel("Read Me", htmlOutput("ReadMe4")),
+                                 tabPanel("Read Me", htmlOutput("ReadMe4") ),
                                  tabPanel("Landmark Survival Plot", htmlOutput("pv41"),
                                  plotOutput("landmarkplot", height= 600, width = 800))
                                )                               #uiOutput("out2")
@@ -463,7 +478,10 @@ ui <- fluidPage(
              navbarMenu("About Us",
                         tabPanel("How to Cite",
                                  fluidRow(
-                                   column(8, offset = 2, 
+                                   column(8, offset = 2,
+                                          "Rupji M, Zhang X and Kowalski J. CASAS: Cancer Survival Analysis Suite, a web based application [version 1; referees: awaiting peer review]. F1000Research 2017, 6:919 (doi: 10.12688/f1000research.11830.1)",
+                                          br(),
+                                          br(),
                                           "The National Cancer Institute (NCI) requires that publications acknowledge the Winship Cancer Institute CCSG support, and they are tracking compliance. When using this tool to report results in your publication, please include the following statement in the acknowledgment section of your publication(s):",
                                           br(),
                                           br(),
@@ -561,22 +579,22 @@ server <- function(input, output, session){
     cb_options2 <- dsnames2
     updateSelectInput(session, "select21", label = "Select a Variable of Interest as Cohort Group",
                       choices = c(cb_options2, "All Patients"),
-                      selected = cb_options2[3])
+                      selected = cb_options2[5])
     updateSelectInput(session, "select22", label = "Select a Time Variable to Visualize KM Plot",
                       choices = cb_options2,
-                      selected=cb_options2[1])
+                      selected=cb_options2[3])
     updateSelectInput(session, "select23", label = "Select a Censoring Variable to Visualize KM Plot",
                       choices = cb_options2,
                       selected =cb_options2[2] )
     updateSelectInput(session, "select24", label = "Select a Time Variable for Survival Analysis",
                       choices = cb_options2,
-                      selected=cb_options2[1])
+                      selected=cb_options2[3])
     updateSelectInput(session, "select25", label = "Select a Censoring Variable for Survival Analysis",
                       choices = cb_options2,
                       selected =cb_options2[2] )
     updateSelectInput(session, "show_vars26", label = "Select multiple Variables to Generate Univariate Survival Association Table",
                       choices = cb_options2,
-                      selected = cb_options2[c(3,5)])
+                      selected = cb_options2[c(5,6)])
     dsnames3 <- colnames(data_input3())
     cb_options3 <- dsnames3
     updateSelectInput(session, "select31", label = "Select a Variable of Interest as Cohort Group",
@@ -608,6 +626,10 @@ server <- function(input, output, session){
     updateSelectInput(session, "select43", label = "Select a Censoring Variable to Visualize landmark Plot",
                       choices = cb_options4,
                       selected =cb_options4[2] )
+    updateSelectInput(session, "select44", label = "Select a Time Dependent Variable to Visualize landmark Plot",
+                      choices = cb_options4,
+                      selected =cb_options4[6] )
+    
     dsnames5 <- colnames(data_input5())
     cb_options5 <- dsnames5
     updateSelectInput(session, "select51", label = "Select a Continuous Variable of Interest",
@@ -932,7 +954,7 @@ server <- function(input, output, session){
   
   data_input2 <- reactive({
     if(input$file2 == 'Example2'){
-      d2 <- read.csv("data/cancer.csv", header =T, sep =",")
+      d2 <- read.csv("data/BRCA_for_quantile_survival_analysis.csv", header =T, sep =",", stringsAsFactors = F)
     }
     else if(input$file2 == 'load_my_own2'){
       inFile <- input$file22
@@ -969,6 +991,7 @@ server <- function(input, output, session){
       else data2[,j] = data2[, j]
     }
     if (input$select21 == "All Patients") {
+      
       time <- data2[,input$select22]
       censor <- data2[,input$select23]
       dat <- cbind.data.frame(time, censor)
@@ -1091,7 +1114,19 @@ server <- function(input, output, session){
         return(NULL)
       } else if (nlevels(x) > 30) {
         return(NULL)
-      } else if (class(x) == "factor"){
+      } else if (class(x) == "factor" | class(x) %in% c("integer", "numeric")){
+        
+        if (class(x) %in% c("integer", "numeric")){
+          dat <- cbind.data.frame(time, censor, xvar=x)
+          if (as.numeric(as.integer(input$cutoff2)) == 1) {
+            perc <- optimalcut(dat)
+          } else {perc <- as.numeric(as.integer(input$cutoff2))}
+          
+          dat$Group <- ifelse(dat[, 'xvar'] < quantile(dat[, 'xvar'], perc/100, na.rm= TRUE), "Low", "High")
+          Group <- as.factor(dat$Group)
+          x <- Group
+        }
+        
         Variable <- c(colnames(xvar)[i], rep("", (length(levels(x))-1)))
         #x <- C(x, contr.treatment, base=3)
         fit <- coxph(Surv(as.numeric(time), as.numeric(factor(censor))) ~ x)
@@ -1109,28 +1144,6 @@ server <- function(input, output, session){
         counts <- rbind.data.frame(counts[2:nrow(counts),], counts[1, ])
         coxres <- cbind.data.frame(Variable, counts, c(paste0(hazard.ratio, " (", lower95,
                                                               "-", upper95, ")"), ""), c(type3.p.value, ""), logrankp)
-        colnames(coxres) <- c("Variable", "Level", "N", "Hazard Ratio (95% CI)", "Type 3 P-value", "Log-rank P-value")
-        if (input$assum == 0) {
-          res[[i]] <- coxres
-        } else if (input$assum == 1) {
-          coxres2 <- cbind.data.frame(coxres, assump)
-          colnames(coxres2)[7] <- "P-value for Proportional Hazards Assumption"
-          res[[i]] <- coxres2
-        }
-      }else if (class(x) %in% c("integer", "numeric")){
-        Variable <- colnames(xvar)[i]
-        fit <- coxph(Surv(as.numeric(time), as.numeric(factor(censor))) ~ x)
-        temp <- cox.zph(fit)
-        assum.p.value <- ifelse(temp$table[3] < 0.001, "<0.001", paste0(round(temp$table[3], 4)))
-        assump <- assum.p.value
-        sum <- summary(fit)
-        hazard.ratio = round(sum$conf.int[1], 2)
-        lower95 = round(sum$conf.int[3], 2)
-        upper95 = round(sum$conf.int[4], 2)
-        #logrank.p.value = sum$sctest[3]
-        type3.p.value = ifelse(sum$coefficients[5] < 0.001, "<0.001", paste0(round(sum$coefficients[5], 4)))
-        coxres <- cbind.data.frame(Variable, NA, length(!is.na(x)), paste0(hazard.ratio, " (", lower95,
-                                                                           "-", upper95, ")"), type3.p.value, "-")
         colnames(coxres) <- c("Variable", "Level", "N", "Hazard Ratio (95% CI)", "Type 3 P-value", "Log-rank P-value")
         if (input$assum == 0) {
           res[[i]] <- coxres
@@ -1313,7 +1326,18 @@ server <- function(input, output, session){
           return(NULL)
         } else if (nlevels(x) > 30) {
           return(NULL)
-        } else if (class(x) == "factor"){
+        } else if (class(x) == "factor" | class(x) %in% c("integer", "numeric")){
+          
+          if (class(x) %in% c("integer", "numeric")){
+            dat <- cbind.data.frame(time, censor, xvar=x)
+            if (as.numeric(as.integer(input$cutoff2)) == 1) {
+              perc <- optimalcut(dat)
+            } else {perc <- as.numeric(as.integer(input$cutoff2))}
+            
+            dat$Group <- ifelse(dat[, 'xvar'] < quantile(dat[, 'xvar'], perc/100, na.rm= TRUE), "Low", "High")
+            Group <- as.factor(dat$Group)
+            x <- Group
+          }
           Variable <- c(colnames(xvar)[i], rep("", (length(levels(x))-1)))
           #x <- C(x, contr.treatment, base=3)
           fit <- coxph(Surv(as.numeric(time), as.numeric(factor(censor))) ~ x)
@@ -1331,28 +1355,6 @@ server <- function(input, output, session){
           counts <- rbind.data.frame(counts[2:nrow(counts),], counts[1, ])
           coxres <- cbind.data.frame(Variable, counts, c(paste0(hazard.ratio, " (", lower95,
                                                                 "-", upper95, ")"), ""), c(type3.p.value, ""), logrankp)
-          colnames(coxres) <- c("Variable", "Level", "N", "Hazard Ratio (95% CI)", "Type 3 P-value", "Log-rank P-value")
-          if (input$assum == 0) {
-            res[[i]] <- coxres
-          } else if (input$assum == 1) {
-            coxres2 <- cbind.data.frame(coxres, assump)
-            colnames(coxres2)[7] <- "P-value for Proportional Hazards Assumption"
-            res[[i]] <- coxres2
-          }
-        }else if (class(x) %in% c("integer", "numeric")){
-          Variable <- colnames(xvar)[i]
-          fit <- coxph(Surv(as.numeric(time), as.numeric(factor(censor))) ~ x)
-          temp <- cox.zph(fit)
-          assum.p.value <- ifelse(temp$table[3] < 0.001, "<0.001", paste0(round(temp$table[3], 4)))
-          assump <- assum.p.value
-          sum <- summary(fit)
-          hazard.ratio = round(sum$conf.int[1], 2)
-          lower95 = round(sum$conf.int[3], 2)
-          upper95 = round(sum$conf.int[4], 2)
-          #logrank.p.value = sum$sctest[3]
-          type3.p.value = ifelse(sum$coefficients[5] < 0.001, "<0.001", paste0(round(sum$coefficients[5], 4)))
-          coxres <- cbind.data.frame(Variable, NA, length(!is.na(x)), paste0(hazard.ratio, " (", lower95,
-                                                                             "-", upper95, ")"), type3.p.value, "-")
           colnames(coxres) <- c("Variable", "Level", "N", "Hazard Ratio (95% CI)", "Type 3 P-value", "Log-rank P-value")
           if (input$assum == 0) {
             res[[i]] <- coxres
@@ -1584,7 +1586,7 @@ server <- function(input, output, session){
         hazard.ratio = round(sum$conf.int[, 1], 2)
         lower95 = round(sum$conf.int[, 3], 2)
         upper95 = round(sum$conf.int[, 4], 2)
-        gray.p.value = ifelse(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event), "pv"] < 0.001, "<0.001", paste0(round(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event), "pv"], 4)))
+        gray.p.value = ifelse(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event2), "pv"] < 0.001, "<0.001", paste0(round(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event2), "pv"], 4)))
         grayp <- c(gray.p.value, rep("", (length(levels(x))-1)))
         type3.p.value = ifelse(sum$coef[, 5] < 0.001, "<0.001", paste0(round(sum$coef[, 5], 4)))
         counts <- data.frame(table(x))
@@ -1602,7 +1604,7 @@ server <- function(input, output, session){
         hazard.ratio = round(sum$conf.int[, 1], 2)
         lower95 = round(sum$conf.int[, 3], 2)
         upper95 = round(sum$conf.int[, 4], 2)
-        gray.p.value = ifelse(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event), "pv"] < 0.001, "<0.001", paste0(round(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event), "pv"], 4)))
+        gray.p.value = ifelse(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event2), "pv"] < 0.001, "<0.001", paste0(round(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event2), "pv"], 4)))
         grayp <- c(gray.p.value, rep("", (length(levels(x))-1)))
         type3.p.value = ifelse(sum$coef[, 5] < 0.001, "<0.001", paste0(round(sum$coef[, 5], 4)))
         counts <- data.frame(table(x))
@@ -1849,7 +1851,7 @@ server <- function(input, output, session){
           hazard.ratio = round(sum$conf.int[, 1], 2)
           lower95 = round(sum$conf.int[, 3], 2)
           upper95 = round(sum$conf.int[, 4], 2)
-          gray.p.value = ifelse(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event), "pv"] < 0.001, "<0.001", paste0(round(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event), "pv"], 4)))
+          gray.p.value = ifelse(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event2), "pv"] < 0.001, "<0.001", paste0(round(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event2), "pv"], 4)))
           grayp <- c(gray.p.value, rep("", (length(levels(x))-1)))
           type3.p.value = ifelse(sum$coef[, 5] < 0.001, "<0.001", paste0(round(sum$coef[, 5], 4)))
           counts <- data.frame(table(x))
@@ -1867,7 +1869,7 @@ server <- function(input, output, session){
           hazard.ratio = round(sum$conf.int[, 1], 2)
           lower95 = round(sum$conf.int[, 3], 2)
           upper95 = round(sum$conf.int[, 4], 2)
-          gray.p.value = ifelse(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event), "pv"] < 0.001, "<0.001", paste0(round(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event), "pv"], 4)))
+          gray.p.value = ifelse(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event2), "pv"] < 0.001, "<0.001", paste0(round(cuminc(time, censor, factor2ind(x))$Tests[as.integer(input$event2), "pv"], 4)))
           grayp <- c(gray.p.value, rep("", (length(levels(x))-1)))
           type3.p.value = ifelse(sum$coef[, 5] < 0.001, "<0.001", paste0(round(sum$coef[, 5], 4)))
           counts <- data.frame(table(x))
@@ -1902,7 +1904,7 @@ server <- function(input, output, session){
 
   data_input4 <- reactive({
     if(input$file4 == 'Example4'){
-      d4 <- read.csv("data/cancer.csv", header =T, sep =",")
+      d4 <- read.csv("data/example_landmark_Stan.csv", header =T, sep =",",stringsAsFactors = F)
     }
     else if(input$file4 == 'load_my_own4'){
       inFile <- input$file42
@@ -1933,17 +1935,20 @@ server <- function(input, output, session){
   output$landmarkplot <- renderPlot({
     data4 <- data_input4()
     if(!is.null(data4)){
-    for (j in 1:ncol(data4)) {
-      if (class(data4[, j]) %in% c("character")) 
-        data4[,j] <- as.factor(data4[,j])
-      else data4[,j] = data4[, j]
-    }
-    
-    xvar <- data4[, input$select41]
+      
+      for (j in 1:ncol(data4)) {
+        if (class(data4[, j]) %in% c("character")) 
+          data4[,j] <- as.factor(data4[,j])
+        else data4[,j] = data4[, j]
+      }
+      
+    xvar <- data4[,input$select41]
     time <- as.numeric(data4[,input$select42])
     censor <- as.numeric(factor(data4[,input$select43]))
-    dat <- cbind.data.frame(time, censor, xvar)
-    dat <- as.data.frame(dat[!is.na(dat$xvar),])
+    rtime <- as.numeric(data4[,input$select44])
+    dat <- cbind.data.frame(time, censor, xvar, rtime)
+    dat <- as.data.frame(dat[!is.na(dat$xvar),]) ###
+    check_data <<- dat
     
     if (is.null(xvar) | is.null(time) | is.null(censor)) {
       return(NULL)
@@ -1951,8 +1956,20 @@ server <- function(input, output, session){
       return(NULL)
     } else if (class(xvar) == "factor" & input$text2 != "") {
       
-      test <- cutLM(dat, outcome=list(time="time", status="censor"),
-                    LM=as.numeric(input$text2), horizon=max(time), covs=list(fixed=colnames(dat)[3]))
+      #test <- cutLM(dat, outcome=list(time="time", status="censor"),
+      #              LM=as.numeric(input$text2), horizon=max(time), covs=list(varying = colnames(dat)[3]))
+      
+      
+      test0 <- check_data[order(check_data$time),] 
+      test <- test0[test0$time > as.numeric(input$text2), ]
+      
+      change_level <- as.character(unique(test[is.na(test$rtime), "xvar"]))
+      
+      for(j in 1:nrow(test)) {
+        check_xvar <- as.character(test$xvar[j])
+        test$xvar[j] <- ifelse(is.na(test$rtime[j])|test$rtime[j] > as.numeric(input$text2), change_level, as.character(test$xvar[j]))
+      }
+      
       fit1 <- survfit(Surv(time, censor) ~ xvar, data = dat)
       fit2 <- survfit(Surv(time, censor) ~ xvar, data = test)
 
@@ -1967,6 +1984,7 @@ server <- function(input, output, session){
       b <- c(0.25, 3, 90)
       pos1<-c(seq(0,as.numeric(input$text2), b[as.numeric(input$time3)]), as.numeric(input$text2))
       NR1<-nrisk(fit1, times=pos1)
+      NR1[, ncol(NR1)] <- rep(NA, nrow(NR1)) 
 
       pos2<-seq(as.numeric(input$text2), max(time), b[as.numeric(input$time3)])
       NR2<-nrisk(fit2, times=pos2)
@@ -2093,6 +2111,7 @@ server <- function(input, output, session){
       b <- c(0.25, 3, 90)
       pos1<-c(seq(0,as.numeric(input$text2), b[as.numeric(input$time3)]), as.numeric(input$text2))
       NR1<-nrisk(fit1, times=pos1)
+      NR1[, ncol(NR1)] <- rep(NA, nrow(NR1))
       
       pos2<-seq(as.numeric(input$text2), max(time), b[as.numeric(input$time3)])
       NR2<-nrisk(fit2, times=pos2)
@@ -2214,39 +2233,57 @@ server <- function(input, output, session){
       pdf(file=paste(pdf_file,".pdf",sep="") , height= 8, width=12)
       #plot_fp()
       data4 <- data_input4()
-      for (j in 1:ncol(data4)) {
-        if (class(data4[, j]) %in% c("character")) 
-          data4[,j] <- as.factor(data4[,j])
-        else data4[,j] = data4[, j]
-      }
       
-      xvar <- data4[, input$select41]
-      time <- as.numeric(data4[,input$select42])
-      censor <- as.numeric(factor(data4[,input$select43]))
-      dat <- cbind.data.frame(time, censor, xvar)
-      dat <- as.data.frame(dat[!is.na(dat$xvar),])
-      if (is.null(xvar) | is.null(time) | is.null(censor)) {
-        return(NULL)
-      } else if (nlevels(xvar) > 30) {
-        return(NULL)
-      } else if (class(xvar) == "factor" & input$text2 != "") {
+      for (j in 1:ncol(data4)) {
+          if (class(data4[, j]) %in% c("character")) 
+            data4[,j] <- as.factor(data4[,j])
+          else data4[,j] = data4[, j]
+        }
         
-        test <- cutLM(dat, outcome=list(time="time", status="censor"),
-                      LM=as.numeric(input$text2), horizon=max(time), covs=list(fixed=colnames(dat)[3]))
-        fit1 <- survfit(Surv(time, censor) ~ xvar, data = dat)
-        fit2 <- survfit(Surv(time, censor) ~ xvar, data = test)
+        xvar <- data4[,input$select41]
+        time <- as.numeric(data4[,input$select42])
+        censor <- as.numeric(factor(data4[,input$select43]))
+        rtime <- as.numeric(data4[,input$select44])
+        dat <- cbind.data.frame(time, censor, xvar, rtime)
+        dat <- as.data.frame(dat[!is.na(dat$xvar),]) ###
+        check_data <<- dat
         
-        p1 <- survdiff(Surv(time, censor) ~ xvar, data = dat)
-        p2 <- survdiff(Surv(time, censor) ~ xvar, data = test)
-        p.val1 <-  1 - pchisq(p1$chisq, length(p1$n) - 1)
-        p.val2 <-  1 - pchisq(p2$chisq, length(p2$n) - 1)
-        darkcols <- c("blue", "red", "green", "black", "yellow", "orange", "pink", "purple", "grey")
-        
+        if (is.null(xvar) | is.null(time) | is.null(censor)) {
+          return(NULL)
+        } else if (nlevels(xvar) > 30) {
+          return(NULL)
+        } else if (class(xvar) == "factor" & input$text2 != "") {
+          
+          #test <- cutLM(dat, outcome=list(time="time", status="censor"),
+          #              LM=as.numeric(input$text2), horizon=max(time), covs=list(varying = colnames(dat)[3]))
+          
+          
+          test0 <- check_data[order(check_data$time),] 
+          test <- test0[test0$time > as.numeric(input$text2), ]
+          
+          change_level <- as.character(unique(test[is.na(test$rtime), "xvar"]))
+          
+          for(j in 1:nrow(test)) {
+            check_xvar <- as.character(test$xvar[j])
+            test$xvar[j] <- ifelse(is.na(test$rtime[j])|test$rtime[j] > as.numeric(input$text2), change_level, as.character(test$xvar[j]))
+          }
+          
+          fit1 <- survfit(Surv(time, censor) ~ xvar, data = dat)
+          fit2 <- survfit(Surv(time, censor) ~ xvar, data = test)
+          
+          p1 <- survdiff(Surv(time, censor) ~ xvar, data = dat)
+          p2 <- survdiff(Surv(time, censor) ~ xvar, data = test)
+          p.val1 <-  1 - pchisq(p1$chisq, length(p1$n) - 1)
+          p.val2 <-  1 - pchisq(p2$chisq, length(p2$n) - 1)
+          darkcols <- c("blue", "red", "green", "black", "yellow", "orange", "pink", "purple", "grey")
+          
+          
         # Drawing curves
         xlabel <- c("Years", "Months", "Days")
         b <- c(0.25, 3, 90)
         pos1<-c(seq(0,as.numeric(input$text2), b[as.numeric(input$time3)]), as.numeric(input$text2))
         NR1<-nrisk(fit1, times=pos1)
+        NR1[, ncol(NR1)] <- rep(NA, nrow(NR1))
         
         pos2<-seq(as.numeric(input$text2), max(time), b[as.numeric(input$time3)])
         NR2<-nrisk(fit2, times=pos2)
@@ -2373,6 +2410,7 @@ server <- function(input, output, session){
         b <- c(0.25, 3, 90)
         pos1<-c(seq(0,as.numeric(input$text2), b[as.numeric(input$time3)]), as.numeric(input$text2))
         NR1<-nrisk(fit1, times=pos1)
+        NR1[, ncol(NR1)] <- rep(NA, nrow(NR1))
         
         pos2<-seq(as.numeric(input$text2), max(time), b[as.numeric(input$time3)])
         NR2<-nrisk(fit2, times=pos2)
@@ -2666,7 +2704,7 @@ server <- function(input, output, session){
     str9 <- paste("NOTE1: In this tab, you are able to carry out standard survival analysis. On the left side panel, you have the options to upload data; select variables for univariate
                    survival association analysis with cox proportional hazard model; meanwhile, select the variables for Kaplan Meier analysis; download the output table and plot accordingly.")
     str10 <- paste("NOTE2: To carry out univariate survival association analysis, it is based on cox proportional hazards model with entering one variable in the model each time. Select the variables of interest to generate the output table. 
-                  You can choose the option to be 'Yes' if you want to test the proportional hazard assumption.")
+                  You can choose the option to be 'Yes' if you want to test the proportional hazard assumption using Schoenfeld residuals test.")
     str11 <- paste("NOTE3: To carry out Kaplan Meier Analysis, the variable of interest can be All Patients or a categorical variable. You also need to specify the time unit corresponding to the data in order for the plot to display correctly.")
     HTML(paste(str0, strong(str9), str0,str0,str0,strong((str10)), str0,str0,str0,strong((str11)), str0, str0,h5(strong(str1)), str0, str2, str3, str4, str6, str7,str8, str0, sep = '<br/>'))
   })
