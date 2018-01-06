@@ -11,8 +11,9 @@ This tool was prepared by members of the Winship Biostatistics and Bioinformatic
 
 'Research reported in this publication was supported in part by the Biostatistics and Bioinformatics Shared resource of Winship Cancer Institute of Emory University and NIH/NCI under award number P30CA138292. The content is solely the responsibility of the authors and does not necessarily represent the official views of the National Institutes of Health.
 
-##### Publication
+##### Citation
 Rupji M, Zhang X and Kowalski J. CASAS: Cancer Survival Analysis Suite, a web based application [version 2; referees: 2 approved]. F1000Research 2017, 6:919 (doi: 10.12688/f1000research.11830.2)
 
-Authors: Manali Rupji, dual M.S., Abby Zhang PhD and Jeanne Kowalski PhD
-Maintainer: Manali Rupji 'manali(dot)rupji(at)emory(dot)edu'
+Authors- Manali Rupji, dual M.S., Abby Zhang PhD and Jeanne Kowalski PhD
+
+Maintainer- Manali Rupji 'manali(dot)rupji(at)emory(dot)edu'
